@@ -1,0 +1,6 @@
+DATABASE_ENGINE=django.db.backends.postgresql_psycopg2
+DATABASE_NAME=pizza_tracker
+DATABASE_USER=selvianl
+DATABASE_PASSWORD=selvianl123
+DATABASE_HOST=postgres
+DATABASE_PORT=5432

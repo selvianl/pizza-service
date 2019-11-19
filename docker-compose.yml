@@ -1,0 +1,23 @@
+version: "3.3" 
+services:
+  postgres:
+    image: postgres:10.10
+    ports:
+      - 5432:5432
+    deploy:
+      replicas: 1
+    environment:
+      POSTGRES_PASSWORD: selvianl123
+      POSTGRES_USER: selvianl
+      POSTGRES_DB: pizza_tracker
+  moberries:
+    image: pizza-service:latest
+    command: bash -c "python manage.py makemigrations && python manage.py migrate"
+    ports:
+      - 8000:8000
+    deploy:
+      replicas: 1
+    env_file:
+      - ./db
+    depends_on:
+      - postgres

@@ -1,0 +1,19 @@
+# Global
+*.pyc
+*__pycache__
+.env
+/static
+cognitus.log
+*.swp
+# IDE Specific (IDEA, Eclipse, Visual Code etc)
+.idea
+.settings
+.vscode
+.project
+.pydevproject
+
+# Virtualenv
+runo
+
+#db
+db.sqlite3
