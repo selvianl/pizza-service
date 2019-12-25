@@ -80,7 +80,7 @@ DATABASES = {
             'NAME': 'pizza_tracker',
             'USER': 'selvianl',
             'PASSWORD': 'selvianl123',
-            'HOST': 'postgres',
+            'HOST': 'localhost',
             'PORT': '5432'
         }
 }
