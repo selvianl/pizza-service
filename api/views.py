@@ -22,16 +22,9 @@ class PizzaCreateView(generics.CreateAPIView):
         serializer.save()
 
 
-class OrderCreateView(generics.CreateAPIView):
+class OrderCreateView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, context={'request' : request})
-        serializer.is_valid(raise_exception=True)
-        resp = serializer.save()
-        headers = self.get_success_headers(serializer.data)
-        return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class OrderTrackingView(generics.ListAPIView):

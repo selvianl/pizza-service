@@ -12,7 +12,7 @@ class Pizza(models.Model):
     amount = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
-            return u'%s / %s / %s' % (self.type, self.size, self.amount)
+        return u'%s / %s / %s' % (self.type, self.size, self.amount)
 
     def current_count(self):
         return self.amount
@@ -33,8 +33,8 @@ class Order(models.Model):
     ('at_courier', 'AT COURIER',),
     ('delivered','DELIVERED'),
     )
-    pizza = models.ForeignKey(Pizza, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    pizza = models.ManyToManyField(Pizza)
+    customer = models.ManyToManyField(Customer)
     quantity = models.PositiveIntegerField(default=1)
     delivered = models.CharField(max_length=50, default='order_getted', choices=DELIVERED_CHOICES)
 

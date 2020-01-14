@@ -18,6 +18,66 @@ class PizzaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CustomerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Customer
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    pizza= PizzaSerializer(many=True, read_only=True)
+    customer= CustomerSerializer(many=True, read_only=True)
+
+    def create(self, validated_data):
+        import ipdb
+        ipdb.set_trace()
+
+    class Meta:
+        model=Order
+        fields = ('pizza', 'customer', 'quantity')
+
+
+#    def validate(self,data):
+#        # order the same flavor of pizza but with different sizes
+#        if Order.objects.filter(customer=data['customer'].id, pizza=data['pizza'].id).exists():
+#            raise serializers.ValidationError("This user has already order.")
+#        return data
+
+#    def save(self):
+#        pizza_id = self.validated_data['pizza']
+#        customer_id = self.validated_data['customer']
+#        quantity = self.validated_data['quantity']
+#        customer = Customer.objects.get(id=customer_id.id)
+#        pizza = Pizza.objects.get(id=pizza_id.id)
+
+        # lock database for same time orders
+##        with transaction.atomic():
+#            pizza_amount = Pizza.objects.select_for_update(nowait=True).get(id=pizza.id).amount
+#            if not pizza_amount >= quantity:
+#                raise('There is not enough ' + pizza.type + " or it has been deposit for someone.")
+#
+#            # create order
+#            order = Order.objects.create(pizza=pizza, customer=customer_id,
+#                                         quantity=quantity, delivered='order_getted')
+#            pizza_amount -= quantity
+#            order.save()
+#
+#        # updating pizza amount
+#        Pizza.objects.filter(size=pizza.size,
+#                             type=pizza.type).update(amount=pizza_amount)
+#
+#        resp = {
+#            "order_id": pizza.id,
+#            "customer" : customer.name,
+#            "address" : customer.address,
+#            "pizza" : pizza.type,
+#            "size" : pizza.size,
+#            "quantity" : quantity,
+#        }
+#
+#        return resp
+
 class OrderUpdateSerializer(serializers.ModelSerializer):
 
     def validate(self, attr):
@@ -78,57 +138,10 @@ class OrderTrackingSerializer(serializers.ModelSerializer):
         exclude = ('pizza', 'customer', 'quantity')
 
 
-class OrderSerializer(serializers.ModelSerializer):
-
-    def validate(self,data):
-        # order the same flavor of pizza but with different sizes
-        if Order.objects.filter(customer=data['customer'].id, pizza=data['pizza'].id).exists():
-            raise serializers.ValidationError("This user has already order.")
-        return data
-
-    def save(self):
-        pizza_id = self.validated_data['pizza']
-        customer_id = self.validated_data['customer']
-        quantity = self.validated_data['quantity']
-        customer = Customer.objects.get(id=customer_id.id)
-        pizza = Pizza.objects.get(id=pizza_id.id)
-
-        # lock database for same time orders
-        with transaction.atomic():
-            pizza_amount = Pizza.objects.select_for_update(nowait=True).get(id=pizza.id).amount
-            if not pizza_amount >= quantity:
-                raise('There is not enough ' + pizza.type + " or it has been deposit for someone.")
-
-            # create order
-            order = Order.objects.create(pizza=pizza, customer=customer_id,
-                                         quantity=quantity, delivered='order_getted')
-            pizza_amount -= quantity
-            order.save()
-
-        # updating pizza amount
-        Pizza.objects.filter(size=pizza.size,
-                             type=pizza.type).update(amount=pizza_amount)
-
-        resp = {
-            "order_id": pizza.id,
-            "customer" : customer.name,
-            "address" : customer.address,
-            "pizza" : pizza.type,
-            "size" : pizza.size,
-            "quantity" : quantity,
-        }
-
-        return resp
-    class Meta:
-        model=Order
-        fields = ('pizza', 'customer', 'quantity')
 
 
-class CustomerSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model=Customer
-        fields = '__all__'
+
 
 
 class OrderRemoveSerializer(serializers.ModelSerializer):
