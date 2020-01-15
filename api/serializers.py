@@ -5,12 +5,12 @@ from django.db import models, transaction, OperationalError
 
 class PizzaSerializer(serializers.ModelSerializer):
 
-    def save(self):
-        data = self.validated_data
-        # if attemps to add with same name and size
-        if Pizza.objects.filter(type=data['type'], size=data['size']).exists():
-            return Pizza.objects.filter(type=data['type'], size=data['size']).update(amount=data['amount'])
-        return Pizza.objects.create(type=data['type'], size=data['size'], amount=data['amount'])
+ #   def save(self):
+ #       data = self.validated_data
+ #       # if attemps to add with same name and size
+ #       if Pizza.objects.filter(type=data['type'], size=data['size']).exists():
+ #           return Pizza.objects.filter(type=data['type'], size=data['size']).update(amount=data['amount'])
+ #       return Pizza.objects.create(type=data['type'], size=data['size'], amount=data['amount'])
 
 
     class Meta:
@@ -32,6 +32,21 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         import ipdb
         ipdb.set_trace()
+        order = Order.objects.create(**validated_data)
+        if 'pizza' in self.initial_data:
+            pizzas = self.initial_data.pop('pizza')
+            for pizza in pizzas:
+                amount = pizza.pop('amount')
+                pizza_obj = Pizza.objects.get(**pizza)
+                order.pizza.add(pizza_obj)
+            order.save()
+        if 'customer' in self.initial_data:
+            customers = self.initial_data.pop('customer')
+            for customer in customers:
+                customer_obj = Customer.objects.get(**customer)
+                order.customer.add(customer_obj)
+            order.save()
+        return order
 
     class Meta:
         model=Order
