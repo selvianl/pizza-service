@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
 from api.serializers import (CustomerSerializer, OrderStatusSerializer,
@@ -14,12 +14,9 @@ class CustomerCreateView(generics.CreateAPIView):
     queryset = Customer.objects.all()
 
 
-class PizzaCreateView(generics.CreateAPIView):
+class PizzaCreateView(generics.ListCreateAPIView):
     serializer_class = PizzaSerializer
     queryset = Pizza.objects.all()
-
-    def perform_create(self, serializer):
-        serializer.save()
 
 
 class OrderCreateView(generics.ListCreateAPIView):
@@ -35,29 +32,13 @@ class OrderTrackingView(generics.ListAPIView):
         return self.queryset.filter(id=self.kwargs['id'])
 
 
-class OrderUpdateView(generics.UpdateAPIView):
-    serializer_class = OrderUpdateSerializer
+class OrderUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = OrderSerializer
     queryset = Order.objects.all()
     lookup_field = 'id'
 
-    def get_queryset(self, *args, **kwargs):
-        return self.queryset.get(id=self.kwargs['id'])
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_queryset()
-        serializer = self.get_serializer(instance, data=request.data,
-                                         context={'request':request},
-                                         partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
-        return Response(serializer.data)
+    def get_object(self):
+        return get_object_or_404(Order, id=self.kwargs['id'])
 
 
 class OrderStatusUpdateView(generics.UpdateAPIView):
