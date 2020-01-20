@@ -24,14 +24,6 @@ class OrderCreateView(generics.ListCreateAPIView):
     queryset = Orders.objects.all()
 
 
-class OrderTrackingView(generics.ListAPIView):
-    serializer_class = OrderTrackingSerializer
-    queryset = Orders.objects.all()
-
-    def get_queryset(self, *args, **kwargs):
-        return self.queryset.filter(id=self.kwargs['id'])
-
-
 class OrderUpdateView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrderSerializer
     queryset = Orders.objects.all()
@@ -39,6 +31,23 @@ class OrderUpdateView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         return get_object_or_404(Orders, id=self.kwargs['id'])
+
+class OrderRemoveView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = OrderRemoveSerializer
+    queryset = Orders.objects.all()
+    lookup_field = 'id'
+
+    def get_object(self):
+        return get_object_or_404(Orders, id=self.kwargs['id'])
+
+
+class OrderTrackingView(generics.ListAPIView):
+    serializer_class = OrderTrackingSerializer
+    queryset = Orders.objects.all()
+
+    def get_queryset(self, *args, **kwargs):
+        return self.queryset.filter(id=self.kwargs['id'])
+
 
 
 class OrderStatusUpdateView(generics.UpdateAPIView):
@@ -64,11 +73,6 @@ class OrderStatusUpdateView(generics.UpdateAPIView):
 
         return Response(serializer.data)
 
-
-class OrderRemoveView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = OrderRemoveSerializer
-    queryset = Orders.objects.all()
-    lookup_field = 'id'
 
 
 class OrderListView(generics.RetrieveAPIView):

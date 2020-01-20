@@ -37,7 +37,12 @@ class OrderSerializer(serializers.ModelSerializer):
                 if not Pizzas.objects.filter(**pizza).exists():
                     raise serializers.ValidationError("Pizza is not exists")
                 pizza_obj = Pizzas.objects.get(**pizza)
+                if data['pizza']:
+                    for exist_pizza in data['pizza']:
+                        if exist_pizza.id == pizza_obj.id:
+                            raise serializers.ValidationError("You can select same type pizza but different sizes.")
                 data['pizza'].append(pizza_obj)
+
         if 'customer' in self.initial_data:
             customers = self.initial_data.pop('customer')
             for customer in customers:
