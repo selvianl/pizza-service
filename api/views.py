@@ -5,28 +5,28 @@ from api.serializers import (CustomerSerializer, OrderStatusSerializer,
                              PizzaSerializer, OrderTrackingSerializer,
                              OrderSerializer, OrderUpdateSerializer,AllOrderListSerializer,
                              OrderRemoveSerializer, OrderListSerializer)
-from api.models import Customer, Pizza, Order
+from api.models import Customers, Pizzas, Orders
 from api.constants import valid_delivered, get_valid_customer_ids
 
 
 class CustomerCreateView(generics.CreateAPIView):
     serializer_class = CustomerSerializer
-    queryset = Customer.objects.all()
+    queryset = Customers.objects.all()
 
 
 class PizzaCreateView(generics.ListCreateAPIView):
     serializer_class = PizzaSerializer
-    queryset = Pizza.objects.all()
+    queryset = Pizzas.objects.all()
 
 
 class OrderCreateView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+    queryset = Orders.objects.all()
 
 
 class OrderTrackingView(generics.ListAPIView):
     serializer_class = OrderTrackingSerializer
-    queryset = Order.objects.all()
+    queryset = Orders.objects.all()
 
     def get_queryset(self, *args, **kwargs):
         return self.queryset.filter(id=self.kwargs['id'])
@@ -34,16 +34,16 @@ class OrderTrackingView(generics.ListAPIView):
 
 class OrderUpdateView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+    queryset = Orders.objects.all()
     lookup_field = 'id'
 
     def get_object(self):
-        return get_object_or_404(Order, id=self.kwargs['id'])
+        return get_object_or_404(Orders, id=self.kwargs['id'])
 
 
 class OrderStatusUpdateView(generics.UpdateAPIView):
-    serializer_class = OrderStatusSerializer
-    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    queryset = Orders.objects.all()
     lookup_field = 'id'
 
     def get_queryset(self, *args, **kwargs):
@@ -67,13 +67,13 @@ class OrderStatusUpdateView(generics.UpdateAPIView):
 
 class OrderRemoveView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrderRemoveSerializer
-    queryset = Order.objects.all()
+    queryset = Orders.objects.all()
     lookup_field = 'id'
 
 
 class OrderListView(generics.RetrieveAPIView):
     serializer_class = OrderListSerializer
-    queryset = Order.objects.all()
+    queryset = Orders.objects.all()
 
     def get_queryset(self, request, *args, **kwargs):
         order_id = self.request.query_params['order_id']
@@ -89,12 +89,12 @@ class OrderListView(generics.RetrieveAPIView):
 
 class AllOrderListView(generics.ListAPIView):
     serializer_class = AllOrderListSerializer
-    queryset = Order.objects.all()
+    queryset = Orders.objects.all()
 
 
 class SearchOrderView(generics.ListAPIView):
     serializer_class = AllOrderListSerializer
-    queryset = Order.objects.all()
+    queryset = Orders.objects.all()
 
     def get_queryset(self,*args, **kwargs):
         valid_ids = get_valid_customer_ids()
