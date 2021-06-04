@@ -1,6 +1,6 @@
 backcall==0.1.0
 decorator==4.4.1
-Django==2.2.8
+Django==2.2.21
 django-filter==2.2.0
 djangorestframework==3.10.3
 ipython==7.9.0
